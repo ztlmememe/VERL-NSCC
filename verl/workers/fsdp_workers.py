@@ -1080,6 +1080,11 @@ class ActorRolloutRefWorker(Worker, DistProfilerExtension):
 
 
 class CriticWorker(Worker, DistProfilerExtension):
+    """
+    This worker can be instantiated as a critic for computing value used in the Generalized Advantage Estimation (GAE)
+    """
+
+    
     def __init__(self, config: FSDPCriticConfig):
         Worker.__init__(self)
         omega_profiler_config = config.get("profiler", {})
