@@ -19,6 +19,15 @@ import sys
 from typing import Optional
 
 import torch
+
+# debug: print transformers version and path
+import transformers, sys, inspect
+print("version:", transformers.__version__)
+print("file:", inspect.getfile(transformers))
+print("exe:", sys.executable)
+print("path0:", sys.path[0])
+
+
 from transformers.modeling_flash_attention_utils import _flash_attention_forward
 from transformers.modeling_utils import PreTrainedModel
 

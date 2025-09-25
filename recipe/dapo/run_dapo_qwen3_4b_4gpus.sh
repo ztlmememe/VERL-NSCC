@@ -65,8 +65,9 @@ offload=True
 # gen_tp=4 # tensor parallel size
 gen_tp=1
 
-# ray job submit --runtime-env="${RUNTIME_ENV}" \
-ray job submit --no-wait --runtime-env="${RUNTIME_ENV}" \
+
+# ray job submit --no-wait --runtime-env="${RUNTIME_ENV}" \
+ray job submit --runtime-env="${RUNTIME_ENV}" \
     --working-dir "${WORKING_DIR}" \
     -- python3 -m recipe.dapo.main_dapo \
     data.train_files="${TRAIN_FILE}" \
@@ -131,7 +132,7 @@ ray job submit --no-wait --runtime-env="${RUNTIME_ENV}" \
     trainer.logger='["console"]' \
     trainer.project_name="${project_name}" \
     trainer.experiment_name="${exp_name}" \
-    trainer.n_gpus_per_node=2 \
+    trainer.n_gpus_per_node=4 \
     trainer.nnodes="${NNODES}" \
     trainer.val_before_train=True \
     trainer.test_freq=5 \
