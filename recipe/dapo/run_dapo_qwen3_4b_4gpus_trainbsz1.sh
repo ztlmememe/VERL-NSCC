@@ -15,7 +15,6 @@ clip_ratio_low=0.2
 clip_ratio_high=0.28
 
 max_prompt_length=$((1024 * 2))
-# max_response_length=$((1024 * 20))
 max_response_length=$((1024 * 20))
 enable_overlong_buffer=True
 overlong_buffer_len=$((1024 * 4))
@@ -28,7 +27,7 @@ filter_groups_metric=acc
 max_num_gen_batches=10
 # train_prompt_bsz=512 # prompt batch size
 # train_prompt_bsz=16 # prompt batch size
-train_prompt_bsz=4 # prompt batch size
+train_prompt_bsz=1 # prompt batch size
 gen_prompt_bsz=$((train_prompt_bsz * 3))
 n_resp_per_prompt=16 # number of responses to generate per prompt
 train_prompt_mini_bsz=32 # "For evaluation on AIME, we repeat the evaluation set for 32 times and report avg@32 for results stability." 
@@ -67,6 +66,7 @@ offload=True
 # gen_tp=4 # tensor parallel size
 gen_tp=1
 
+echo running ray job submit
 
 # ray job submit --no-wait --runtime-env="${RUNTIME_ENV}" \
 ray job submit --runtime-env="${RUNTIME_ENV}" \

@@ -132,6 +132,19 @@ class RLHFDataset(Dataset):
         dataframes = []
         for parquet_file in self.data_files:
             # read parquet files and cache
+            # check env variable TRANSFORMERS_CACHE
+            # print("HOME in ray job: ", os.environ.get("HOME"))
+            # print("VLLM_USE_V1 in ray job: ", os.environ.get("VLLM_USE_V1"))
+            # print("TORCH_NCCL_AVOID_RECORD_STREAMS in ray job: ", os.environ.get("TORCH_NCCL_AVOID_RECORD_STREAMS"))
+            # print("PWD in ray job: ", os.environ.get("PWD"))
+            # print("HF_HOME: ", os.environ.get("HF_HOME"))
+            # print("TRANSFORMERS_CACHE: ", os.environ.get("TRANSFORMERS_CACHE"))
+            # print("HF_DATASETS_CACHE: ", os.environ.get("HF_DATASETS_CACHE"))
+            # print("os.listdir(/root)", os.listdir("/root"))
+            # # os.environ["HOME"] = "/root"
+            # # os.environ["HF_DATASETS_CACHE"] = "/root/tmp"
+            # print("HOME in ray job 2: ", os.environ.get("HOME"))
+            # print("HF_DATASETS_CACHE: ", os.environ.get("HF_DATASETS_CACHE"))
             dataframe = datasets.load_dataset("parquet", data_files=parquet_file)["train"]
             dataframes.append(dataframe)
         self.dataframe: datasets.Dataset = datasets.concatenate_datasets(dataframes)

@@ -15,7 +15,6 @@ clip_ratio_low=0.2
 clip_ratio_high=0.28
 
 max_prompt_length=$((1024 * 2))
-# max_response_length=$((1024 * 20))
 max_response_length=$((1024 * 20))
 enable_overlong_buffer=True
 overlong_buffer_len=$((1024 * 4))
@@ -57,7 +56,7 @@ val_top_p=0.7
 
 # Performance Related Parameter
 # sp_size=8 # ulysses sequence parallelism size
-sp_size=1
+sp_size=2
 use_dynamic_bsz=True
 # actor_ppo_max_token_len=$((max_prompt_length + max_response_length))
 # infer_ppo_max_token_len=$((max_prompt_length + max_response_length))

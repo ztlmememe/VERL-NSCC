@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -xeuo pipefail
 
+: "${RAY_ADDRESS:?must be http://HEAD_IP:8265}"
+
 project_name='DAPO'
-exp_name='DAPO-Qwen3-4B-Base_4A100'
+exp_name='DAPO-Qwen3-4B-Base_2nodes4A100_1'
 
 adv_estimator=grpo
 
@@ -15,7 +17,6 @@ clip_ratio_low=0.2
 clip_ratio_high=0.28
 
 max_prompt_length=$((1024 * 2))
-# max_response_length=$((1024 * 20))
 max_response_length=$((1024 * 20))
 enable_overlong_buffer=True
 overlong_buffer_len=$((1024 * 4))
@@ -57,7 +58,7 @@ val_top_p=0.7
 
 # Performance Related Parameter
 # sp_size=8 # ulysses sequence parallelism size
-sp_size=1
+sp_size=2
 use_dynamic_bsz=True
 # actor_ppo_max_token_len=$((max_prompt_length + max_response_length))
 # infer_ppo_max_token_len=$((max_prompt_length + max_response_length))
@@ -65,7 +66,7 @@ actor_ppo_max_token_len=$(((max_prompt_length + max_response_length) / sp_size))
 infer_ppo_max_token_len=$(((max_prompt_length + max_response_length) / sp_size))
 offload=True
 # gen_tp=4 # tensor parallel size
-gen_tp=1
+gen_tp=2
 
 
 # ray job submit --no-wait --runtime-env="${RUNTIME_ENV}" \

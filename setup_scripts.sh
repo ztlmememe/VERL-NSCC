@@ -24,6 +24,7 @@ bash recipe/dapo/run_dapo_qwen3_4b_ntugpuws.sh
 qsub -I -l select=1:ngpus=1 -P personal-guoweia3  -l walltime=02:00:00 -q ai
 qsub -I -l select=1:ngpus=1 -P personal-guoweia3  -l walltime=02:00:00 -q normal
 qsub -I -l select=1:ngpus=1 -P 12004167  -l walltime=02:00:00 -q normal
+qsub -I -l select=1:ngpus=2 -P 12004167  -l walltime=02:00:00 -q ai
 qsub -I -l select=1:ncpus=4:mem=64gb -l walltime=02:00:00 -q normal 
 
 # check projects' resources

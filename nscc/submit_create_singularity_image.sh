@@ -18,7 +18,7 @@
 
 ## Merge standard output and error from PBS script
 #PBS -j oe
-#PBS -o /home/users/ntu/guoweia3/scratch/job_logs/create_singularity_image.log
+#PBS -o /home/users/ntu/guoweia3/scratch/job_logs/create_singularity_image.%J.log
 
 # Change to directory where job was submitted
 cd "$PBS_O_WORKDIR" || exit $?

@@ -8,7 +8,7 @@
 #PBS -l walltime=06:00:00
 
 ## Submit to correct queue for AI cluster access
-#PBS -q ai
+#PBS -q normal
 
 ## Specify project ID
 #PBS -P 12004167
@@ -29,4 +29,4 @@ singularity exec --nv --cleanenv --no-home \
   --bind "$PWD":/workspace,/home/users/ntu/guoweia3/scratch/experiments/data/agents:/root \
   --pwd /workspace \
   /home/users/ntu/guoweia3/scratch/images/verl_nscc.sif \
-  bash nscc/run_insidecon_dapo_qwen3_4b_4gpus.sh
+  bash nscc/run_insidecon_dapo_qwen3_4b_2gpus.sh
