@@ -242,8 +242,8 @@ pbsdsh -n 0 -- env SARGS="${SARGS}" IMAGE="${IMAGE}" RAY_TMP="${RAY_TMP}" \
 
 echo starting test code I
 
-# pbsdsh -n 0 -- env SARGS="${SARGS}" IMAGE="${IMAGE}" RAY_TMP="${RAY_TMP}" \
-#  bash -lc "echo \$SARGS; echo \$RAY_TMP && echo HELLO1 && module load singularity && echo HELLO2 && singularity exec $SARGS "$IMAGE" bash -lc "export RAY_ADDRESS=http://${HEAD_IP}:${DASHBOARD_PORT}; bash recipe/dapo/run_dapo_qwen3_4b_2nodes_4gpus_1.sh" "
+pbsdsh -n 0 -- env SARGS="${SARGS}" IMAGE="${IMAGE}" RAY_TMP="${RAY_TMP}" \
+ bash -lc "echo \$SARGS; echo \$RAY_TMP && echo HELLO1 && module load singularity && echo HELLO2 && singularity exec $SARGS "$IMAGE" bash -lc "export RAY_ADDRESS=http://${HEAD_IP}:${DASHBOARD_PORT}; bash recipe/dapo/run_dapo_qwen3_4b_2nodes_4gpus_1.sh" "
 
 
 

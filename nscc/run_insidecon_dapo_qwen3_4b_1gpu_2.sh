@@ -12,13 +12,7 @@ export HOME="/root"
 # Point Ray to the runtime env file
 export RUNTIME_ENV="$WORKING_DIR/recipe/dapo/runtime_env.yaml"
 
-echo ls inside containter:
-ls 
-echo pwd inside containter:
-pwd
-echo "[PBS] HOME: ${HOME}  RUNTIME_ENV:${RUNTIME_ENV}  WORKING_DIR:${WORKING_DIR}"
-
 ray stop --force || true
 ray start --head
 
-bash recipe/dapo/run_dapo_qwen3_4b_4gpus_2.sh
+bash recipe/dapo/run_dapo_qwen3_4b_1gpu_2.sh

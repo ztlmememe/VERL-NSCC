@@ -132,7 +132,7 @@ class RLHFDataset(Dataset):
         dataframes = []
         for parquet_file in self.data_files:
             # read parquet files and cache
-            # check env variable TRANSFORMERS_CACHE
+            # # check env variable TRANSFORMERS_CACHE
             # print("HOME in ray job: ", os.environ.get("HOME"))
             # print("VLLM_USE_V1 in ray job: ", os.environ.get("VLLM_USE_V1"))
             # print("TORCH_NCCL_AVOID_RECORD_STREAMS in ray job: ", os.environ.get("TORCH_NCCL_AVOID_RECORD_STREAMS"))

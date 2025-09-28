@@ -14,11 +14,11 @@
 #PBS -P 12004167
 
 ## Job name
-#PBS -N dapo_qwen3_4b_4gpus_v2
+#PBS -N dapo_qwen3_4b_4gpus_2
 
 ## Merge standard output and error from PBS script
 #PBS -j oe
-#PBS -o /home/users/ntu/guoweia3/scratch/job_logs/create_dapo_qwen3_4b_4gpus_v2_train_prompt_bsz4.log
+#PBS -o /home/users/ntu/guoweia3/scratch/job_logs/create_dapo_qwen3_4b_4gpus_2_train_prompt_bsz4.log
 
 # Change to directory where job was submitted
 set -xeuo pipefail
