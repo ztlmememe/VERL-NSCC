@@ -37,6 +37,12 @@ myquota
 module avail 2>&1 | grep cuda
 
 
+# check IP of nodes with jobid
+qstat -f 11912716 | awk -F= '/exec_host|exec_vnode/ {gsub(/ /,""); print $2}' \
+| tr '+' '\n' | sed 's,/.*,,g' | xargs -I{} getent hosts {} \
+| awk '{print $1}' | sort -u
+
+
 # container script for NSCC
 singularity build verl_nscc.sif docker://hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.3-flashinfer0.2.2-cxx11abi0
 

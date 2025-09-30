@@ -5,7 +5,9 @@
 #PBS -l select=2:ngpus=4
 #PBS -l walltime=03:00:00
 #PBS -j oe
-#PBS -o /home/users/ntu/guoweia3/scratch/job_logs/dapo_ray_2n4g_sing.log
+#PBS -o /home/users/ntu/guoweia3/scratch/job_logs/dapo_ray_2n4g_working_example_1.log
+#PBS -k oe 
+# "-k oe" arg to output log file on the fly, instead of at the end 
 
 # set -xeuo pipefail
 cd "$PBS_O_WORKDIR"

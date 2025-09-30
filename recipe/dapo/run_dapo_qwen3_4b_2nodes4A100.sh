@@ -2,7 +2,15 @@
 # set -xeuo pipefail
 
 project_name='DAPO'
-exp_name='DAPO-Qwen3-4B-Base_4A100'
+
+timestamp() {
+  date +"%Y-%m-%d %T $*"
+}
+# exp_name="DAPO-Qwen3-4B-Base_2nodes4A100"
+# include timestamp in exp_name
+exp_name="DAPO-Qwen3-4B-Base_2nodes4A100_$(timestamp)"
+
+echo "exp_name: ${exp_name}"
 
 adv_estimator=grpo
 
