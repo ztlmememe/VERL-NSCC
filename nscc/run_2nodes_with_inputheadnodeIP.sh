@@ -26,9 +26,6 @@ SARGS="--nv --cleanenv --no-home --env HOME=/root \
 mapfile -t nodes_array < <(uniq "${PBS_NODEFILE}")
 NNODES="${NNODES:-${#nodes_array[@]}}"
 
-# head_node="${nodes_array[0]}"
-# head_node_ip="$(getent hosts "${head_node}" | awk '{print $1; exit}')"
-
 
 port="${port:-6379}"                  # Ray GCS port
 dashboard_port="${dashboard_port:-8265}"
@@ -44,43 +41,9 @@ uniq $PBS_NODEFILE | while read host; do
     echo "$host -> $(getent hosts $host | awk '{print $1}')"
 done
 
-
-# --------------------------- START RAY HEAD --------------------------
+# find out time to keep the Ray worker online
 WALLTIME=$(qstat -f $PBS_JOBID | sed -rn 's/.*Resource_List.walltime = (.*)/\1/p')
 SECONDS=`echo $WALLTIME | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }'`
-# echo "Keeping nodes' Ray execution in background for $SECONDS s"
-
-
-# cat > "${SINGULARITY_EXE_PATH}/start_head_in_container.sh" <<EOF
-# #!/usr/bin/env bash
-
-# export WORKING_DIR="/workspace"
-# export HOME="/root"
-# # Point Ray to the runtime env file
-# export RUNTIME_ENV="/workspace/recipe/dapo/runtime_env.yaml"
-
-# ray stop --force
-
-# ray start --head \
-#     --node-ip-address='${HEAD_NODE_IP}' \
-#     --port='${port}' \
-#     --dashboard-host=0.0.0.0 --dashboard-port='${dashboard_port}' \
-#     --num-gpus '${GPUS_PER_NODE}' \
-#     --disable-usage-stats 
-
-# echo "SLEEPING FOR $SECONDS s, to keep Ray cluster up"
-# sleep $SECONDS
-# EOF
-
-# chmod +x "${SINGULARITY_EXE_PATH}/start_head_in_container.sh"
-
-
-# # pbsdsh needs to be run in the background (with & at the end) with sleep duration throughout the job to avoid closing the ray cluster when pbsdsh exits: https://stackoverflow.com/questions/72583725/how-to-convert-a-script-that-uses-ssh-to-pbsdsh-while-using-ray      
-# pbsdsh -n 0 -- env SARGS="${SARGS}" IMAGE="${IMAGE}" \
-#     bash -lc "module load singularity && singularity exec $SARGS "$IMAGE" bash -lc "/workspace/ray/start_head_in_container.sh"   " &
-
-# sleep 10
-
 
 # --------------------------- START RAY WORKERS -----------------------
 cat > "${SINGULARITY_EXE_PATH}/start_worker_in_container.sh" <<EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export RAY_ADDRESS="http://10.168.0.43:8265"
+export RAY_ADDRESS="http://10.168.4.20:8265"
 # Make the project workspace the working directory Ray ships to workers
 export WORKING_DIR="/workspace"
 export HOME="/root"
