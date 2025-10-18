@@ -9,16 +9,22 @@ echo "HEAD_NODE_IP: $HEAD_NODE_IP"
 module load singularity
 
 # -------- Image & bind paths (renamed for Singularity) ---------------
-singularity_image_path="/home/users/ntu/guoweia3/scratch/images/verl_nscc.sif"
-IMAGE="/home/users/ntu/guoweia3/scratch/images/verl_nscc.sif"
+singularity_image_path="/home/users/ntu/tianle00/scratch/cache/docker_images/verl_nscc.sif"
+IMAGE="/home/users/ntu/tianle00/scratch/cache/docker_images/verl_nscc.sif"
 BIND_WORK="$PWD"                                    # project code
 SINGULARITY_EXE_PATH="${BIND_WORK}/ray"                                  # ray scripts
 
+export SINGULARITY_CACHEDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/
+export SINGULARITY_TMPDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/tmp
+export APPTAINER_CACHEDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/
+export APPTAINER_TMPDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/tmp
+
 mkdir -p "$SINGULARITY_EXE_PATH"
 
-BIND_DATA="/home/users/ntu/guoweia3/scratch/experiments/data/agents"  # shared data
+BIND_DATA="/home/users/ntu/tianle00/scratch/cache"  # shared data
 SARGS="--nv --cleanenv --no-home --env HOME=/root \
   --bind ${BIND_WORK}:/workspace,${BIND_DATA}:/root \
+  --env HOME=/root,HF_HOME=/root/verl/models/.hf,HF_HUB_CACHE=/root/verl/models/hub,HF_DATASETS_CACHE=/root/verl/models/datasets,TRANSFORMERS_CACHE=/root/verl/models \
   --pwd /workspace"
 
 

@@ -1,0 +1,236 @@
+# 查询存储容量
+myquota
+
+myprojects
+# 查看自己的session有几个
+qstat
+
+# 如果要用git，不要使用qsub命令
+
+# 切换到master分支
+git checkout master
+
+# 有的bash可以不需要module load的命令
+
+qstat -u tianle00 -w
+
+qstat -u tianle00 -w -f | grep -E "Job Id:|Job_Name"
+
+wandb login
+wandb API 183d7b42219e867211d54490ad4079690a94a834
+
+
+conda env create -n MolTextTranslationEval -f environment_eval.yml python=3.9
+conda activate MolTextTranslationEval
+python -m spacy download en_core_web_sm
+pip install git+https://github.com/samoturk/mol2vec
+
+
+myprojects -l -s 2025-07-01 -e 2025-09-30
+
+
+; 出现这个报错用：
+; ImportError: /lib64/libstdc++.so.6: version `GLIBCXX_3.4.26' not found (required by /home/users/ntu/tianle00/.conda/envs/llmxfm/lib/python3.12/site-packages/scipy/linalg/_linalg_pythran.cpython-312-x86_64-linux-gnu.so)
+; export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
+
+
+# 在开始跑程序之前，先加载miniforge3和cuda，直接复制下面的命令 walltime是你想运行程序的时间，ngpus是gpu数量  normal or ai, ai适用于GPU多的情况
+qsub -I -l select=1:ngpus=1 -P 12004167 -l walltime=00:50:00 -q normal 
+module load miniforge3
+module load cuda/11.8.0
+export HF_HOME=/home/users/ntu/tianle00/scratch/cache
+export CONDA_ENVS_PATH=/home/users/ntu/tianle00/scratch/conda/envs
+export CONDA_PKGS_DIRS=/home/users/ntu/tianle00/scratch/conda/pkgs
+conda activate llmxfm
+cd /home/users/ntu/tianle00/scratch/llmxfm-0.0
+
+
+111
+
+python -m chemistry.SC_scripts.MOL_run_trainer_pad \
+    --experiment_type rep_icl \
+    --experiment_name na \
+    --seed 2021 \
+    --task_name ESOL \
+    --num_tests 1000 \
+    --model_name /home/users/ntu/tianle00/scratch/cache/models--meta-llama--Meta-Llama-3.1-70B-Instruct/snapshots/945c8663693130f8be2ee66210e062158b2a9693
+
+
+
+
+
+
+
+
+
+python -m chemistry.SC_scripts.DTI_run_pca_icl_baseline_v7 \
+    --experiment_type pca_icl \
+    --experiment_name na \
+    --seed 2021 \
+    --task_name BindingDB_Ki \
+    --num_tests 1000 \
+    --mode max_affinity \
+    --instruction_prompt_name DTI_prompt_mol_pro_rep_icl_Ki \
+    --model_name /home/users/ntu/tianle00/scratch/cache/models--meta-llama--Meta-Llama-3.1-70B-Instruct/snapshots/945c8663693130f8be2ee66210e062158b2a9693
+
+
+python -m chemistry.SC_scripts.DTI_run_trainer_icrl_v4 \
+    --experiment_type rep_w_o_norm \
+    --experiment_name na \
+    --seed 2021 \
+    --task_name BindingDB_Ki \
+    --num_tests 1000 \
+    --n_representation_shots 50 \
+    --mode max_affinity \
+    --instruction_prompt_name DTI_prompt_mol_pro_rep_icl_Ki \
+    --model_name /home/users/ntu/tianle00/scratch/cache/models--meta-llama--Meta-Llama-3.1-70B-Instruct/snapshots/945c8663693130f8be2ee66210e062158b2a9693
+
+
+
+# 提交运行脚本，python运行完成后自动结束任务
+
+qsub /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts/run_DTI_baseline.pbs
+
+qsub /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts/run_DTI_pca_ot.pbs
+
+qsub /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts/run_ESOL_baseline.pbs
+
+qsub /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts/run_ESOL_pca_ot.pbs
+
+
+scp -r tianle@10.96.184.96:/mnt/ssd/ztl/LLMxFM/chemistry/datasets/ /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/datasets/
+
+
+
+/mnt/ssd/ztl/LLMxFM/chemistry/datasets
+
+huggingface-cli download tianle233/icrl-data data.tar.gz --repo-type=dataset
+
+tar -xzvf /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts/moleculeqa.tar.gz
+
+# 查看自己的进程
+qstat -u tianle00 -w
+
+# 删除自己的进程
+qdel 8785144
+
+# 删除自己的所有进程
+qstat -u tianle00 | awk '{print $1}' | grep '^[0-9]' | xargs qdel
+
+; Job ID：作业的唯一标识符。
+; Jobname：作业名。
+; Queue：作业提交的队列名称。
+; Time：作业的最大运行时间。
+; SessID: 运行的会话 ID
+; NDS:使用节点数量
+; TSK: 64（任务数，分配了 64 个 CPU 核）
+; Memory: 440gb（请求的总内存为 440 GB）
+; Time: 00:30（最大运行时间为 30 分钟）
+; S：作业状态：
+; Q：排队中
+; R：正在运行
+; C：已完成或取消
+; Elapsed Time: 00:01（作业已运行了 1 分钟）
+
+
+
+qsub -I -l select=1:ngpus=1 -P 12004167 -l walltime=04:40:00 -q normal 
+module load miniforge3
+module load cuda/11.8.0
+conda activate llmxfm
+
+qsub -I -l select=1:ncpus=8 -P 12004167 -l walltime=02:40:00 -q normal 
+module load miniforge3
+module load cuda/11.8.0
+conda activate llmxfm
+
+cd /home/users/ntu/tianle00/scratch/llmxfm-0.0/
+
+
+python get_top_k.py
+
+python -m chemistry.SC_scripts.get_sim_vis_internal
+python -m chemistry.SC_scripts.get_sim_vis_between
+
+
+python -m chemistry.SC_scripts.vis_json_example2
+
+
+python -m chemistry.SC_scripts.test_sample
+
+
+cd /home/users/ntu/tianle00/scratch/llmxfm-0.0
+export HF_HOME=/home/users/ntu/tianle00/scratch/cache
+bash /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts/run_script2.sh
+
+
+# 查询自己的进程
+qstat -u tianle00 -w
+
+
+# 查看所有队列的排队情况
+qstat -q
+
+# 查看自己的排队情况
+Queue            Memory CPU Time Walltime Node   Run   Que   Lm  State
+---------------- ------ -------- -------- ---- ----- ----- ---- -----
+g3                 --      --    24:00:00  --      7     3   --   E R
+
+; 说明有7个进程正在运行，3个进程在排队
+
+qstat -q | grep "g3"
+
+# 查看正在排队的进程前面还有几个进程
+qstat | grep " Q " | awk '{print $1}' | grep -n 8923807.pbs101 
+
+qstat | grep "g3" | grep " Q " | awk '{print $1}' | grep -n "8845764"
+
+qstat | grep " Q " | awk '{print $1}' | grep -B 9999 "8829946"
+
+qstat -a | awk '{print $2}'
+
+
+
+python -m chemistry.SC_scripts.vis_dis
+
+# meta-llama/Llama-3.1-70B token
+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  
+
+
+# 查找ip地址,取第一个inet后面的地址就行
+ifconfig 
+# eg. 
+# bond0: flags=5187<UP,BROADCAST,RUNNING,MASTER,MULTICAST>  mtu 1500
+#         inet 172.23.129.9  netmask 255.255.0.0  broadcast 0.0.0.0
+#         ether 52:54:00:4d:07:f0  txqueuelen 1000  (Ethernet)
+#         RX packets 51914331  bytes 16695574908 (15.5 GiB)
+#         RX errors 0  dropped 2373  overruns 0  frame 0
+#         TX packets 36911255  bytes 11490202581 (10.7 GiB)
+#         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+# 就是
+# 172.23.129.9
+
+# 从别人文件夹下面拉文件夹   Zs1994828103.
+scp -r wanlong0@172.23.129.9:/home/users/ntu/wanlong0/scratch/llmxfm_exp3/chemistry/datasets /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/datasets
+
+# 从别人文件夹下面拉文件
+scp -r wanlong0@172.23.129.9:/home/users/ntu/wanlong0/scratch/llmxfm_exp3/chemistry/datasets/1.txt /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/SC_scripts
+
+scp -r /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/datasets/Caco2_wang_fm_reps_tensor_train.pt wanlong0@172.23.129.9:/home/users/ntu/wanlong0/scratch/llmxfm_exp3/chemistry/datasets
+
+
+scp -r wanlong@10.96.182.129:/mnt/hdd/ztl/LLMxFM/chemistry/datasets/aaseq_to_rep_store.pkl /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/datasets
+
+
+tar -czvf data_cache.tar.gz /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/datasets
+
+
+
+curl -L -o /home/users/ntu/tianle00/scratch/llmxfm-0.0/chemistry/datasets/aaseq_to_rep_store.pkl "https://drive.usercontent.google.com/download?id=1IAvijSOZh6qGbdUobw21GOc9UMVRfVEB&export=download&confirm=t"
+
+
+
+
+scp -r tianle@10.96.184.96:/mnt/ssd/ztl/vector-icl /home/users/ntu/tianle00/scratch

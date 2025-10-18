@@ -19,6 +19,61 @@
 
 ![seed logo](https://github.com/user-attachments/assets/c42e675e-497c-4508-8bb9-093ad4d1f216)
 
+
+
+
+
+
+This repository provides end-to-end recipes for running **Decoupled CLIP and Dynamic Sampling Policy Optimization (DAPO)** on the **NSCC (National Supercomputing Centre, Singapore)** cluster.
+It includes Singularity-based environment setup, Ray multi-node orchestration, dataset preparation, and reproducible training workflows for **Qwen3-4B-Base** models.
+
+**Features:**
+
+* 🧩 **Singularity Containerized Runtime** — Stable deployment on NSCC HPC nodes with controlled cache management.
+* ⚙️ **Single-node and Multi-node Training** — Seamless scaling via Ray cluster head/worker scripts.
+* 📦 **Structured Data & Model Caching** — Safe disk usage under NSCC quota constraints.
+* 🔬 **Reproducible Experiments** — Verified DAPO math and reasoning datasets (Math-17k, AIME-2024).
+* 🧠 **Support for Qwen3-4B & CLIP Variants** — Configurable model paths and checkpointing.
+
+**Directory Highlights:**
+
+```
+verl/                       # Working directory (scripts, configs)
+├── nscc/                    # PBS submission scripts for single/multi-node jobs
+└── recipe/dapo/             # DAPO experiment configurations
+```
+
+**Use case:**
+Designed for researchers running **LLM × Policy Optimization** workloads on HPC clusters where containerization, cache isolation, and distributed training stability are critical.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <h1 style="text-align: center;">verl: Volcano Engine Reinforcement Learning for LLMs</h1>
 
 verl is a flexible, efficient and production-ready RL training library for large language models (LLMs).
