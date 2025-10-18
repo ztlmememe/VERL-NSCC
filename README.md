@@ -39,7 +39,7 @@ It includes Singularity-based environment setup, Ray multi-node orchestration, d
 
 ```
 verl/                       # Working directory (scripts, configs)
-├── nscc/                    # PBS submission scripts for single/multi-node jobs
+├── nscc/                    # PBS submission scripts for single/multi-node jobs, contains the initial version of the readme provided by alvin and the readme containing a more detailed configuration tutorial
 └── recipe/dapo/             # DAPO experiment configurations
 ```
 
