@@ -49,9 +49,6 @@ mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/{data,models}
 mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/models/{hub,datasets,transformers,.hf}
 ```
 
-
-非常好，这张目录截图提供了重要的上下文。下面是我已将它整合进最新版 README 的更新节选（**第 1 节 Directory Structure**），并加入了对你实际路径 `/home/users/ntu/tianle00/scratch/cache/verl` 的文件树说明，适合直接放进项目主 README.md：
-
 ---
 
 ## 📁 1. Directory Structure
