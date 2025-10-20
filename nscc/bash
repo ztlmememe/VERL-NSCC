@@ -1,0 +1,9 @@
+# check your own quota
+myquota
+
+
+# check your submission
+qstat -u tianle00 -w
+
+qstat -u tianle00 -w -f | grep -E "Job Id:|Job_Name"
+

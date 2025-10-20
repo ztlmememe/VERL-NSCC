@@ -1,0 +1,9 @@
+working_dir: ./
+excludes: ["/.git/"]
+env_vars:
+  TORCH_NCCL_AVOID_RECORD_STREAMS: "1"
+  VLLM_USE_V1: "1"
+  HOME: "/root"
+  HF_HOME: "/root/.cache/huggingface"
+  TRANSFORMERS_CACHE: "/root/.cache/huggingface/transformers"
+  HF_DATASETS_CACHE: "/root/.cache/huggingface/datasets"

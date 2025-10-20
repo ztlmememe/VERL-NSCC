@@ -1,0 +1,59 @@
+module load singularity
+
+singularity pull /home/users/ntu/tianle00/scratch/cache/docker_images/verl_nscc.sif docker://verlai/verl:app-verl0.5-transformers4.55.4-vllm0.10.0-mcore0.13.0-te2.2
+
+
+export SINGULARITY_CACHEDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/
+export SINGULARITY_TMPDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/tmp
+export APPTAINER_CACHEDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/
+export APPTAINER_TMPDIR=/home/users/ntu/tianle00/scratch/cache/docker_images/.sif_work/tmp
+
+
+
+cd /home/users/ntu/tianle00/scratch/verl
+
+
+# 宿主机路径（按需改名）
+IMAGE=/home/users/ntu/tianle00/scratch/cache/docker_images/verl_nscc.sif
+HOST_CACHE=/home/users/ntu/tianle00/scratch/cache/verl
+
+mkdir -p "$HOST_CACHE"/{data,models}
+mkdir -p "$HOST_CACHE"/models/{hub,datasets,transformers,.hf}
+
+# 1️⃣ 数据预处理
+singularity exec --cleanenv --no-home \
+  --bind "$PWD":/workspace,"$HOST_CACHE/data":/root/verl/data,"$HOST_CACHE/models":/root/verl/models \
+  --env HOME=/root,HF_HOME=/root/verl/models/.hf,HF_HUB_CACHE=/root/verl/models/hub,HF_DATASETS_CACHE=/root/verl/models/datasets,TRANSFORMERS_CACHE=/root/verl/models \
+  --pwd /workspace "$IMAGE" \
+  python3 -m examples.data_preprocess.gsm8k --local_save_dir /root/verl/data/gsm8k
+
+# Note: change /home/users/ntu/tianle00/scratch/verl/recipe/dapo/run_dapo_qwen3_4b_4gpus_2.sh
+# /models/models--Qwen--Qwen3-4B-Base/snapshots/906bfd4b4dc7f14ee4320094d8b41684abff8539"}
+# this is to ensure we can share models
+# for data: 
+# DAPO math-17k
+# Training DAPO math-17k dataset: https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k
+# Testing: AIME’24: https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024
+# + TRAIN_FILE=/root/verl/data/dapo-math-17k.parquet
+# + TEST_FILE=/root/verl/data/aime-2024.parquet
+
+# 2️⃣ 模型下载
+singularity exec --cleanenv --no-home \
+  --bind "$HOST_CACHE/models":/root/verl/models \
+  --env HOME=/root,HF_HOME=/root/verl/models/.hf,HF_HUB_CACHE=/root/verl/models/hub,HF_DATASETS_CACHE=/root/verl/models/datasets,TRANSFORMERS_CACHE=/root/verl/models,HF_HUB_ENABLE_HF_TRANSFER=1 \
+  "$IMAGE" bash --noprofile --norc -lc '
+python3 - << "PY"
+from transformers import pipeline
+pipe = pipeline("text-generation", model="Qwen/Qwen3-4B-Base")
+print("ok", type(pipe.model).__name__)
+PY
+'
+
+
+
+
+# singularity shell --nv --cleanenv --no-home \
+#   --bind $PWD:/workspace \
+#   --bind "$PWD":/workspace,/home/users/ntu/guoweia3/scratch/experiments/data/agents:/root \
+#   --pwd /workspace \
+#   /home/users/ntu/tianle00/scratch/cache/docker_images/verl_nscc.sif

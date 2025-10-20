@@ -1,0 +1,154 @@
+
+
+salloc --job-name=ray-on-slurm-int\
+ -A g204 -C gpu\
+ --partition=normal\
+ --time=01:00:00\
+ --nodes=2\
+ --ntasks-per-node=1\
+ --gpus-per-node=4\
+ --cpus-per-task=288\
+ ray_on_slurm_interactive.sh
+
+
+srun --partition=normal --time=02:00:00 --nodes=1 -A g204 \
+       --ntasks-per-node=1 --cpus-per-task=16 --gpus-per-node=0 \
+       --pty bash
+
+or 
+salloc --partition=normal --time=02:00:00 --nodes=1 -A g204 --ntasks-per-node=1 --cpus-per-task=16 --gpus-per-node=0
++
+srun --jobid=974903 --pty bash
+
+
+
+1. 首先创建/users/tzhang/.config/containers/storage.conf
+[storage]
+driver = "overlay"
+runroot = "/dev/shm/$USER/runroot"
+graphroot = "/dev/shm/$USER/root"
+这一步是必须的，因为使用podman build下载的内容不能直接存储在用户目录下，只能挂在共享的暂存目录中，导出后的环境才可以存储
+
+2. 进入一个计算节点，然后运行podman下载示例镜像
+
+srun --partition=normal --time=02:00:00 --nodes=1 -A g204 \
+       --ntasks-per-node=1 --cpus-per-task=16 --gpus-per-node=0 \
+       --pty bash
+
+or 
+salloc --partition=normal --time=02:00:00 --nodes=1 -A g204 --ntasks-per-node=1 --cpus-per-task=16 --gpus-per-node=0
++
+srun --jobid=974903 --pty bash
+
+podman build -f Dockerfile -t ${USER}/ngc-ray:25.06 .
+podman build -f Dockerfile.ray-vllm -t ${USER}/ngc-ray-vllm:v0.10.2 .
+
+
+3. 创建环境变量用于存储所导出的镜像（注意导出和下载要在一个进程中执行,否则第一步下载的缓存会被清理）
+export CE_IMAGES=/capstor/scratch/cscs/$USER/images
+mkdir -p $CE_IMAGES
+
+enroot import -x mount -o ${CE_IMAGES}/ngc-ray+25.06.sqsh podman://${USER}/ngc-ray:25.06 
+这一步 如果显示[INFO] Fetching image，说明没有索引到之前下载好的镜像，用podman images查找一下位置，然后手动替换${USER}/ngc-ray:25.06 的部分
+enroot import -x mount -o ${CE_IMAGES}/ngc-ray+25.06.sqsh podman://localhost/tzhang/ngc-ray:25.06
+
+
+enroot import -x mount -o ${CE_IMAGES}/ngc-ray-vllm+v0.10.2.sqsh podman://localhost/tzhang/ngc-ray-vllm:v0.10.2
+
+
+
+
+
+salloc -A g204 -C gpu -N 1 -t 01:00:00
+srun --pty bash
+
+
+#!/bin/bash
+#SBATCH -t 5:00
+#SBATCH --nodes=2
+
+srun ./jobreport -o report -- my_command
+./jobreport print report
+
+
+srun ./jobreport -o $SCRATCH/reports/myjob123.report -- my_command
+
+df -h /users/tzhang
+
+/capstor/scratch/cscs -- now
+/ritom/scratch/cscs -- 11.10以后
+
+#!/bin/bash
+#SBATCH --job-name=gh200-single-rank-per-gpu
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=4
+#SBATCH --gpus-per-task=1
+
+srun <application>
+
+
+
+salloc -p normal -t 01:00:00 --ntasks=1 --cpus-per-task=8 --gres=gpu:1
+# 等价：把 --gpus-per-task=1 换成 --gres=gpu:1 也行
+salloc -p normal -t 01:00:00 --ntasks=1 --cpus-per-task=8 --gres=gpu:1 srun --pty bash
+
+; salloc = 分配资源，但不自动给你一个 shell。
+
+; srun --pty bash = 真正进入分配的节点。
+
+
+
+
+conda activate tinyllava_factory
+pip install --upgrade pip  # enable PEP 660 support
+pip install -e .
+
+
+
+
+
+squeue -u tzhang
+
+scancel 1447150
+
+scontrol show job  1447154
+
+
+# 查看哪些节点GPU可用
+sinfo -p normal -N -l | grep idle | grep gpu
+
+
+
+salloc -A g201 -C gpu --partition=normal --time=00:15:00 \
+       --nodes=1 --ntasks=1 --cpus-per-task=2 --mem=16G --gres=gpu:1
+
+
+--gres=gpu:N (单任务多卡)
+gres = generic resources，指“通用资源”
+只保证分配到 总数，但不会自动和 ntasks 绑定
+
+--gpus-per-task=N (多任务并行)
+每个 task 分配几张 GPU
+--ntasks=8 --gpus-per-task=1，Slurm 会给每个任务分配 1 张 GPU，总共 8 张
+
+
+
+sinfo -s
+
+PARTITION → 队列/分区名字
+
+AVAIL → 是否可用（up / down）
+
+TIMELIMIT → 单个作业的最长运行时间
+
+NODES(A/I/O/T) → 节点数量统计：
+
+    A = Allocated (正在运行作业的节点)
+
+    I = Idle (空闲可用节点)
+
+    O = Other (维护或 drain 状态)
+
+    T = Total (总节点数)
+
+    NODELIST → 节点范围
