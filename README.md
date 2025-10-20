@@ -24,34 +24,22 @@
 
 
 
-This repository provides end-to-end recipes for running **Decoupled CLIP and Dynamic Sampling Policy Optimization (DAPO)** on the **NSCC (National Supercomputing Centre, Singapore)** cluster.
-It includes Singularity-based environment setup, Ray multi-node orchestration, dataset preparation, and reproducible training workflows for **Qwen3-4B-Base** models.
+# 🧠 VERL on ALPS — Podman + Slurm Distributed Setup
 
-**Features:**
+This branch provides end-to-end recipes for running **Decoupled CLIP** and **Dynamic Sampling Policy Optimization (DAPO)** on the **CSCS ALPS cluster**.
+It replaces the earlier NSCC Singularity setup with a **Podman + Enroot + Slurm**-based workflow designed for large-scale multi-GPU and multi-node experiments.
 
-* 🧩 **Singularity Containerized Runtime** — Stable deployment on NSCC HPC nodes with controlled cache management.
-* ⚙️ **Single-node and Multi-node Training** — Seamless scaling via Ray cluster head/worker scripts.
-* 📦 **Structured Data & Model Caching** — Safe disk usage under NSCC quota constraints.
-* 🔬 **Reproducible Experiments** — Verified DAPO math and reasoning datasets (Math-17k, AIME-2024).
-* 🧠 **Support for Qwen3-4B & CLIP Variants** — Configurable model paths and checkpointing.
+It includes container image build instructions, Ray cluster orchestration scripts, dataset preparation utilities, and reproducible training workflows for **Qwen3-4B-Base** and related CLIP variants.
 
-**Directory Highlights:**
+---
 
-```
-verl/                       # Working directory (scripts, configs)
-├── nscc/                    # PBS submission scripts for single/multi-node jobs, contains the initial version of the readme provided by alvin and the readme containing a more detailed configuration tutorial
-└── recipe/dapo/             # DAPO experiment configurations
-```
+## ✳️ Features
 
-**Use case:**
-Designed for researchers running **LLM × Policy Optimization** workloads on HPC clusters where containerization, cache isolation, and distributed training stability are critical.
+* 🧩 **Podman + Enroot Containerized Runtime** — Reproducible, lightweight container execution on ALPS compute nodes with persistent `.sqsh` images.
+* ⚙️ **Multi-node Training via Slurm + Ray** — Fully automated cluster head/worker orchestration through `verl_ray_on_slurm_interactive.sh`.
+* 📦 **Isolated Cache & Image Storage** — Uses `$CE_IMAGES` to manage container exports and avoid `/users/` quota overflow.
 
-
-
-
-
-
-
+---
 
 
 
