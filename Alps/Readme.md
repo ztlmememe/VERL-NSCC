@@ -253,10 +253,29 @@ If you don’t want an interactive session, submit via Slurm:
 sbatch ./sbatch_verl_ray_train.sh
 ```
 
+
+> ⚠️ **Note:**
+> Although `verl_quickstart_nscc.sh` uses the **same parameters** as
+> `./recipe/dapo/run_dapo_qwen3_4b_2nodes4A100.sh`,
+> it has been **slightly modified** to better match the CSCS environment.
+> When testing **other training or evaluation scripts**, you should similarly adjust these configurations to fit your environment.
+>
+> The same principle applies to `sbatch_verl_ray_train.sh`:
+> when submitting non-interactive jobs, edit the line inside the script that runs
+>
+> ```bash
+> srun ... bash ./verl_quickstart_nscc.sh
+> ```
+>
+> and replace it with the specific script you intend to run.
+> All other job configuration parameters (partition, GPUs, CPUs, etc.) can remain unchanged.
+
+
 > ⚠️ **Checkpoint Warning:**
 > Each checkpoint file can be ~47 GB.
 > Do **not** store checkpoints under `/users/...` (home quota is limited).
 > Instead, modify the script to save under `/capstor/scratch/cscs/$USER/` or, after the November 10 update, under `/ritom/scratch/cscs/$USER/`.
+
 
 ---
 

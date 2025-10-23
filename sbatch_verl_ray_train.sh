@@ -15,25 +15,25 @@ mkdir -p logs
 mkdir -p logs/${SLURM_JOB_NAME}
 cd /users/tzhang/VERL-NSCC
 
-# --------- 环境准备（容器/虚拟环境/代理等根据你环境自行调整）---------
-# 若需容器环境，可在这里 enroot start / podman run ...
-# 这里沿用你的 venv：
+# --------- Environment Setup (container / venv / proxy etc.) ---------
+# If you use containerized environments, you may start enroot/podman here.
+# In this case, we continue using the Python virtual environment:
 source venv-vllm-v0.10.2/bin/activate || { echo "venv not found"; exit 1; }
 
-# --------- 检查镜像目录（如果你用 CE_IMAGES 的容器模式）---------
+# --------- Check image directory (only if using CE_IMAGES container mode) ---------
 if [[ -n "${CE_IMAGES:-}" ]]; then
   if [[ ! -d "${CE_IMAGES}" ]]; then
     echo "Warning: CE_IMAGES is set but path not found: ${CE_IMAGES}"
   fi
 fi
 
-# --------- 选头节点 & IP ----------
+# --------- Select head node & assign IP ---------
 nodes=$(scontrol show hostnames "$SLURM_JOB_NODELIST")
 mapfile -t nodes_array <<<"$nodes"
 head_node=${nodes_array[0]}
 port=6379
 
-# 获取 head 节点 IP（与交互式脚本一致处理 IPv6/多 IP 情况）
+# Obtain head node IP (handle IPv6 / multi-IP cases as in the interactive script)
 head_node_ip=$(srun -N1 -n1 -w "$head_node" hostname --ip-address)
 if [[ "$head_node_ip" == *" "* ]]; then
   IFS=' ' read -ra ADDR <<<"$head_node_ip"
