@@ -1,7 +1,0 @@
-# pack-refs with: peeled fully-peeled sorted 
-a275b3c53470f2dee4ff29b5878924f443d27b53 refs/remotes/origin/dependabot/pip/numpy-lt-3.0.0
-2b5277dd01c4fbf5a57c8ac6f44c9c5f4d686d32 refs/remotes/origin/dependabot/pip/ray-2.50.1
-a0377801b1eaaf58af40f82da30da03428852196 refs/remotes/origin/dependabot/pip/sglang-all--0.5.3.post3
-a6f6a79d2cd220646f91a1a6eaa94edf0a3fd908 refs/remotes/origin/dependabot/pip/tokenizers-0.22.1
-cd6e5aaf5ef32a5103069f7f84d4e30d8384bcbd refs/remotes/origin/dependabot/pip/transformers-4.57.1
-060cd1650fcab797858e6d13ec21d7f5db12e278 refs/remotes/origin/main

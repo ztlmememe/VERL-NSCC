@@ -47,6 +47,7 @@ podman build -f Dockerfile.ray-vllm -t ${USER}/ngc-ray-vllm:v0.10.2 .
 3. 创建环境变量用于存储所导出的镜像（注意导出和下载要在一个进程中执行,否则第一步下载的缓存会被清理）
 export CE_IMAGES=/capstor/scratch/cscs/$USER/images
 mkdir -p $CE_IMAGES
+完成这一步后要在/users/tzhang/.bashrc里面写入
 
 enroot import -x mount -o ${CE_IMAGES}/ngc-ray+25.06.sqsh podman://${USER}/ngc-ray:25.06 
 这一步 如果显示[INFO] Fetching image，说明没有索引到之前下载好的镜像，用podman images查找一下位置，然后手动替换${USER}/ngc-ray:25.06 的部分
@@ -56,6 +57,137 @@ enroot import -x mount -o ${CE_IMAGES}/ngc-ray+25.06.sqsh podman://localhost/tzh
 enroot import -x mount -o ${CE_IMAGES}/ngc-ray-vllm+v0.10.2.sqsh podman://localhost/tzhang/ngc-ray-vllm:v0.10.2
 
 
+进入/users/tzhang/VERL-NSCC/Alps/env/ngc-ray-25.06.toml把对应的image路径改了，并在mounts中添加"/users/${USER}"，让进程可以访问后续内容
+注意运行下面的命令之前要确保禁用conda的自启动，不然会在容器内自动把python路径改到别的地方
+进入交互式界面的时候会报错
+groups: cannot find name for group ID 33318
+导致用户名变成I have no name!,可以通过在/users/tzhang/.bashrc中加入下面的命令解决，不影响后续的代码运行
+if ! getent passwd "$(id -u)" >/dev/null 2>&1; then
+  # set a safe prompt that doesn't rely on username resolution
+  export PS1="[${USER:-u$(id -u)}@$(hostname -s) \W]\\$ "
+  return 0
+fi
+
+运行脚本检查基于ray的头节点分配脚本是否正常
+salloc -A g204 --job-name=ray-on-slurm-int\
+ --partition=normal\
+ --time=01:00:00\
+ --nodes=2\
+ --ntasks-per-node=1\
+ --gpus-per-node=4\
+ --cpus-per-task=288\
+ ray_on_slurm_interactive.sh
+
+运行RL测试，先激活容器环境，然后建一个临时的虚拟环境
+srun -A g204 --environment ./env/ngc-ray-vllm-v0.10.2.toml --pty bash
+cd /users/tzhang/VERL-NSCC
+python3 -m venv --system-site-packages venv-vllm-v0.10.2 && \
+  source venv-vllm-v0.10.2/bin/activate && \
+  pip install --no-build-isolation -e .
+
+后面可以直接
+source venv-vllm-v0.10.2/bin/activate
+
+启动head 节点(退出之前环境配置的容器)
+cd /users/tzhang/VERL-NSCC/
+
+salloc -A g204 --job-name=ray-on-slurm-int\
+ --partition=normal\
+ --time=01:00:00\
+ --nodes=2\
+ --ntasks-per-node=1\
+ --gpus-per-node=4\
+ --cpus-per-task=288\
+ verl_ray_on_slurm_interactive.sh
+
+看到
+=== Ray Cluster Status ===
+Number of nodes: 2
+Node: nid007203, Status: True
+Node: nid007174, Status: True
+Ray initialization successful!
+Launch interactive shell...
+
+之后，执行
+source venv-vllm-v0.10.2/bin/activate
+
+下载环境和模型
+python3 -m examples.data_preprocess.gsm8k --local_save_dir /users/tzhang/VERL-NSCC/verl-data/gsm8k
+
+
+bash ./verl_quickstart_gsm8k.sh
+
+
+
+与NSCC对应的流程：
+
+注意，现在脚本会吧所有大型文件放在/capstor/scratch/cscs下面，等11.10更新以后，新的scratch目录/ritom/scratch/cscs可用后，所有的镜像需要修改并重新下载构建
+
+对于镜像，我检查了一下大部分公开的镜像都是基于(linux/amd64）的，而这个集群是arm64的，无法直接使用，只能使用他们给的这个配置来做
+
+对于使用交互式界面的测试，与之前相同，
+cd /users/tzhang/VERL-NSCC/
+
+salloc -A g204 --job-name=ray-on-slurm-int\
+ --partition=normal\
+ --time=01:00:00\
+ --nodes=2\
+ --ntasks-per-node=1\
+ --gpus-per-node=4\
+ --cpus-per-task=288\
+ verl_ray_on_slurm_interactive.sh
+
+source venv-vllm-v0.10.2/bin/activate
+
+bash ./verl_quickstart_nscc.sh (对应./recipe/dapo/run_dapo_qwen3_4b_2nodes4A100.sh)
+
+如果不想使用交互式界面，可以直接用sbatch运行脚本，但是记得修改一下ckpt的存储路径，直接在home下存储的话，一个ckpt有47G，很容易qouta超标
+sbatch ./sbatch_verl_ray_train.sh
+
+
+
+
+srun --partition=normal --time=02:00:00 --nodes=1 -A g204 \
+       --ntasks-per-node=1 --cpus-per-task=16 --gpus-per-node=0 \
+       --pty bash
+
+export CE_IMAGES=/capstor/scratch/cscs/$USER/images
+
+
+verl:app-verl0.5-transformers4.55.4-vllm0.10.0-mcore0.13.0-te2.2
+
+# 1️⃣ 直接拉取远程镜像
+podman pull docker://verlai/verl:app-verl0.5-transformers4.55.4-vllm0.10.0-mcore0.13.0-te2.2
+
+verlai/verl:app-verl0.5-transformers4.55.4-vllm0.10.0-mcore0.13.0-te2.2
+
+# 2️⃣ 打上你自己的标签
+podman tag docker.io/verlai/verl:app-verl0.5-transformers4.55.4-vllm0.10.0-mcore0.13.0-te2.2 \
+    ${USER}/verl-ray-vllm-nscc:v0.10.2
+
+# 3️⃣ 导入成 .sqsh 文件
+enroot import -x mount \
+  -o ${CE_IMAGES}/verl-ray-vllm-nscc+v0.10.2.sqsh \
+  podman://localhost/${USER}/verl-ray-vllm-nscc:v0.10.2
+
+
+
+
+
+
+srun -A g204 -p normal -t 01:00:00 -N1 --ntasks-per-node=1 --gpus-per-node=1 --cpus-per-task=8 \
+     --environment ./env/ngc-ray-25.06.toml \
+     --chdir /users/tzhang/VERL-NSCC/Alps \
+     --pty bash
+
+git remote add origin https://github.com/ztlmememe/VERL-NSCC.git
+
+git add .gitignore
+
+git checkout -b alps
+git add .
+git commit -m "init alps branch"
+git push -u origin alps
 
 
 

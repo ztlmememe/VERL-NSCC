@@ -47,6 +47,11 @@ tmp/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+.git.bak.*
+
+# Ignore all files named 'bash' (no extension)
+bash
+
 
 # Installer logs
 pip-log.txt
