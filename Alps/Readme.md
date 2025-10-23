@@ -1,7 +1,3 @@
-非常好，这份 README 已经写得很系统了，我帮你把你的中文草稿内容无缝地补进原版 README，保持统一的格式和英文风格（同时加上清晰的 “NSCC vs CSCS 对应说明”）。下面是整合后的版本 👇
-
----
-
 # 🚀 Running VERL + Ray on SLURM (CSCS ALPS Environment)
 
 This guide explains how to build and run the VERL reinforcement learning environment based on the **vLLM** container image within the **CSCS ALPS** system using **Podman**, **Enroot**, and **Slurm**.
