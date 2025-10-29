@@ -104,6 +104,17 @@ Required datasets:
 * **Training:** [DAPO-Math-17k](https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k)
 * **Testing:** [AIME-2024](https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024)
 
+```bash
+mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/data
+cd /home/users/ntu/<your_id>/scratch/cache/verl/data
+
+# Training set: DAPO-Math-17k
+wget "https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k/resolve/main/data/dapo-math-17k.parquet?download=true" -O dapo-math-17k.parquet
+
+# Testing set: AIME-2024
+wget "https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024/resolve/main/data/aime-2024.parquet?download=true" -O aime-2024.parquet
+```
+
 Expected locations:
 
 ```
