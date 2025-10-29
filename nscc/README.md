@@ -10,6 +10,9 @@ All commands are assumed to be run inside your **project working directory**.
 ### Step 1. Load Singularity module
 
 ```bash
+git clone https://github.com/ztlmememe/VERL-NSCC.git
+cd VERL-NSCC/nscc
+
 module load singularity
 ```
 
@@ -20,8 +23,9 @@ module load singularity
 ```bash
 export SINGULARITY_CACHEDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/
 export SINGULARITY_TMPDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/tmp
-export APPTAINER_CACHEDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/
-export APPTAINER_TMPDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/tmp
+
+mkdir -p $SINGULARITY_CACHEDIR
+mkdir -p $SINGULARITY_TMPDIR
 ```
 
 ### Step 3. Pull the public container image
