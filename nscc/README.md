@@ -39,24 +39,6 @@ singularity pull /home/users/ntu/<your_id>/scratch/cache/docker_images/verl_nscc
 
 ## 📁 1. Directory Structure
 
-For reproducibility and storage safety, **separate the working and cache directories**.
-
-| Purpose            | Path                                           | Notes                                                     |
-| ------------------ | ---------------------------------------------- | --------------------------------------------------------- |
-| Working directory  | `/home/users/ntu/<your_id>/scratch/verl`       | All scripts (`nscc/`, `recipe/`, etc.) are run here       |
-| Model & data cache | `/home/users/ntu/<your_id>/scratch/cache/verl` | All large files, Hugging Face cache, datasets, and models |
-
-Ensure these folders exist:
-
-```bash
-mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/{data,models}
-mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/models/{hub,datasets,transformers,.hf}
-```
-
----
-
-## 📁 1. Directory Structure
-
 For reproducibility and quota safety, **separate the working directory** (for scripts) **from the cache directory** (for large files).
 
 | Purpose                           | Path                                          | Description                                                                                                    |
