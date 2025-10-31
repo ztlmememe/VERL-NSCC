@@ -245,7 +245,7 @@ export HEAD_NODE_IP="<HEAD_NODE_IP>"
 in:
 
 ```
-nscc/submit_2gpuworkernodes_winputheadIP.sh
+nscc/submit_dapo_qwen2.5_0.5b_2gpu_2nodes.sh
 ```
 
 ### Step 4. Launch worker nodes
