@@ -10,6 +10,9 @@ All commands are assumed to be run inside your **project working directory**.
 ### Step 1. Load Singularity module
 
 ```bash
+git clone https://github.com/ztlmememe/VERL-NSCC.git
+cd VERL-NSCC/nscc
+
 module load singularity
 ```
 
@@ -20,8 +23,9 @@ module load singularity
 ```bash
 export SINGULARITY_CACHEDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/
 export SINGULARITY_TMPDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/tmp
-export APPTAINER_CACHEDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/
-export APPTAINER_TMPDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.sif_work/tmp
+
+mkdir -p $SINGULARITY_CACHEDIR
+mkdir -p $SINGULARITY_TMPDIR
 ```
 
 ### Step 3. Pull the public container image
@@ -29,24 +33,6 @@ export APPTAINER_TMPDIR=/home/users/ntu/<your_id>/scratch/cache/docker_images/.s
 ```bash
 singularity pull /home/users/ntu/<your_id>/scratch/cache/docker_images/verl_nscc.sif \
     docker://verlai/verl:app-verl0.5-transformers4.55.4-vllm0.10.0-mcore0.13.0-te2.2
-```
-
----
-
-## 📁 1. Directory Structure
-
-For reproducibility and storage safety, **separate the working and cache directories**.
-
-| Purpose            | Path                                           | Notes                                                     |
-| ------------------ | ---------------------------------------------- | --------------------------------------------------------- |
-| Working directory  | `/home/users/ntu/<your_id>/scratch/verl`       | All scripts (`nscc/`, `recipe/`, etc.) are run here       |
-| Model & data cache | `/home/users/ntu/<your_id>/scratch/cache/verl` | All large files, Hugging Face cache, datasets, and models |
-
-Ensure these folders exist:
-
-```bash
-mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/{data,models}
-mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/models/{hub,datasets,transformers,.hf}
 ```
 
 ---
@@ -117,6 +103,17 @@ Required datasets:
 
 * **Training:** [DAPO-Math-17k](https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k)
 * **Testing:** [AIME-2024](https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024)
+
+```bash
+mkdir -p /home/users/ntu/<your_id>/scratch/cache/verl/data
+cd /home/users/ntu/<your_id>/scratch/cache/verl/data
+
+# Training set: DAPO-Math-17k
+wget "https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k/resolve/main/data/dapo-math-17k.parquet?download=true" -O dapo-math-17k.parquet
+
+# Testing set: AIME-2024
+wget "https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024/resolve/main/data/aime-2024.parquet?download=true" -O aime-2024.parquet
+```
 
 Expected locations:
 
@@ -191,7 +188,6 @@ After running preprocessing and model downloads, your cache folder should look l
 * The `ckpts/DAPO/` directory stores training checkpoints for both **single-node** and **multi-node** runs.
 * The `models--Qwen--Qwen3-4B-Base` folder is the Hugging Face auto-downloaded directory structure containing the model weights and snapshot metadata.
 * The `.hf`, `.locks`, and `.triton` subdirectories are automatically managed by Hugging Face or Triton runtime; do not delete them unless you need to reset cache.
-
 
 ---
 
