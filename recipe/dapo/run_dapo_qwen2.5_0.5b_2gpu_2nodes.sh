@@ -2,7 +2,13 @@
 set -xeuo pipefail
 
 project_name='DAPO'
-exp_name='DAPO-Qwen3-4B-Base_4A100'
+timestamp() {
+  date +"%Y-%m-%d %T $*"
+}
+# exp_name="DAPO-Qwen3-4B-Base_2nodes4A100"
+# include timestamp in exp_name
+exp_name="DAPO-Qwen2.5-0.5B-Instruct_2nodes1A100_$(timestamp)"
+
 
 adv_estimator=grpo
 
@@ -24,7 +30,7 @@ loss_agg_mode="token-mean"
 
 enable_filter_groups=True
 filter_groups_metric=acc
-max_num_gen_batches=10
+max_num_gen_batches=50
 # train_prompt_bsz=512 # prompt batch size
 # train_prompt_bsz=16 # prompt batch size
 train_prompt_bsz=4 # prompt batch size
@@ -39,11 +45,11 @@ RAY_ADDRESS=${RAY_ADDRESS:-"http://localhost:8265"}
 WORKING_DIR=${WORKING_DIR:-"${PWD}"}
 RUNTIME_ENV=${RUNTIME_ENV:-"${WORKING_DIR}/verl/trainer/runtime_env.yaml"}
 # NNODES=${NNODES:-16}
-NNODES=${NNODES:-1}
+NNODES=${NNODES:-2}
 # Paths
 RAY_DATA_HOME=${RAY_DATA_HOME:-"${HOME}/verl"}
 # RAY_DATA_HOME=${RAY_DATA_HOME:-"${PWD}"}
-MODEL_PATH=${MODEL_PATH:-"${RAY_DATA_HOME}/models/Qwen3-4B-Base"}
+MODEL_PATH=${MODEL_PATH:-"Qwen/Qwen2.5-0.5B-Instruct"}
 CKPTS_DIR=${CKPTS_DIR:-"${RAY_DATA_HOME}/ckpts/${project_name}/${exp_name}"}
 TRAIN_FILE=${TRAIN_FILE:-"${RAY_DATA_HOME}/data/dapo-math-17k.parquet"}
 TEST_FILE=${TEST_FILE:-"${RAY_DATA_HOME}/data/aime-2024.parquet"}
@@ -64,8 +70,13 @@ actor_ppo_max_token_len=$(((max_prompt_length + max_response_length) / sp_size))
 infer_ppo_max_token_len=$(((max_prompt_length + max_response_length) / sp_size))
 offload=True
 # gen_tp=4 # tensor parallel size
-gen_tp=1
+gen_tp=2
 
+echo "exp_name: ${exp_name}"
+echo HOME: ${HOME}
+echo RAY_DATA_HOME: ${RAY_DATA_HOME}
+echo TRAIN_FILE: ${TRAIN_FILE}
+echo TEST_FILE: ${TEST_FILE}
 
 # ray job submit --no-wait --runtime-env="${RUNTIME_ENV}" \
 ray job submit --runtime-env="${RUNTIME_ENV}" \
@@ -133,7 +144,7 @@ ray job submit --runtime-env="${RUNTIME_ENV}" \
     trainer.logger='["console"]' \
     trainer.project_name="${project_name}" \
     trainer.experiment_name="${exp_name}" \
-    trainer.n_gpus_per_node=1 \
+    trainer.n_gpus_per_node=2 \
     trainer.nnodes="${NNODES}" \
     trainer.val_before_train=True \
     trainer.test_freq=5 \
