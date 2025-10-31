@@ -195,12 +195,12 @@ After running preprocessing and model downloads, your cache folder should look l
 
 ---
 
-## 🚀 5. Single-Node Training (4 × A100 GPUs)
+## 🚀 5. Single-Node Training (2 × A100 GPUs)
 
 Submit the training job:
 
 ```bash
-qsub nscc/submit_dapo_qwen3_4b_4gpus.sh
+qsub submit_dapo_qwen2.5_0.5b_2gpu.sh
 ```
 
 This script launches the Ray cluster **within one node** and starts the training task.
@@ -255,7 +255,7 @@ nscc/submit_2gpuworkernodes_winputheadIP.sh
 ### Step 4. Launch worker nodes
 
 ```bash
-qsub nscc/submit_2gpuworkernodes_winputheadIP.sh
+qsub nscc/submit_dapo_qwen2.5_0.5b_2gpu_2nodes.sh
 ```
 
 These GPU nodes will automatically join the Ray cluster and receive model training tasks.
@@ -275,6 +275,6 @@ These GPU nodes will automatically join the Ray cluster and receive model traini
 
 | Task                  | Command                                            |
 | --------------------- | -------------------------------------------------- |
-| Single-node 4 GPU run | `qsub nscc/submit_dapo_qwen3_4b_4gpus.sh`          |
+| Single-node 2 GPU run | `qsub nscc/submit_dapo_qwen2.5_0.5b_2gpu.sh`          |
 | Multi-node head (CPU) | `qsub nscc/submit_1cpuheadnode.sh`                 |
-| Multi-node workers    | `qsub nscc/submit_2gpuworkernodes_winputheadIP.sh` |
+| Multi-node workers    | `qsub nscc/submit_dapo_qwen2.5_0.5b_2gpu_2nodes.sh` |
